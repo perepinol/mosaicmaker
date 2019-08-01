@@ -23,20 +23,26 @@ public class AverageComparator implements IComparator {
     }
 
     @Override
-    public int compareAtom(BufferedImage other, int x, int y) {
-        if (
-                x * atomWidth > image.getWidth() ||
-                y * atomHeight > image.getHeight()
-        ) throw new IndexOutOfBoundsException("Coordinate out of bounds");
-        if ((double) image.getWidth() / image.getHeight() != (double) other.getWidth() / other.getHeight()) return -1;
+    public int compareRGBA(RGBA other, int x, int y) {
+        if (x * atomWidth > image.getWidth() || y * atomHeight > image.getHeight())
+            throw new IndexOutOfBoundsException("Coordinate out of bounds");
 
         int[] thisRGB = image.getRGB(x * atomWidth, y * atomHeight, atomWidth, atomHeight, null, 0, atomWidth);
-        int[] otherRGB = other.getRGB(0, 0, other.getWidth(), other.getHeight(), null, 0, other.getWidth());
-
         RGBA thisAverage = RGBA.averageInt(Arrays.stream(thisRGB).boxed().collect(Collectors.toList()));
+
+        RGBA error = thisAverage.operate(other, (a, b) -> Math.abs(a - b));
+        return error.getRed() + error.getGreen() + error.getBlue() + (int) (error.getAlpha() * 255);
+    }
+
+    @Override
+    public int compareAtom(BufferedImage other, int x, int y) {
+        if (x * atomWidth > image.getWidth() || y * atomHeight > image.getHeight())
+            throw new IndexOutOfBoundsException("Coordinate out of bounds");
+        if ((double) image.getWidth() / image.getHeight() != (double) other.getWidth() / other.getHeight()) return -1;
+
+        int[] otherRGB = other.getRGB(0, 0, other.getWidth(), other.getHeight(), null, 0, other.getWidth());
         RGBA otherAverage = RGBA.averageInt(Arrays.stream(otherRGB).boxed().collect(Collectors.toList()));
 
-        RGBA error = thisAverage.operate(otherAverage, (a, b) -> Math.abs(a - b));
-        return error.getRed() + error.getGreen() + error.getBlue();
+        return compareRGBA(otherAverage, x, y);
     }
 }

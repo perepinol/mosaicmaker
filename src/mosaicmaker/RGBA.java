@@ -52,12 +52,16 @@ public class RGBA {
     }
 
     public RGBA operate(RGBA other, BinaryOperator<Integer> operation) {
-        return new RGBA(
+        return new RGBA(operateWithoutConstraints(other, operation));
+    }
+
+    public int[] operateWithoutConstraints(RGBA other, BinaryOperator<Integer> operation) {
+        return new int[]{
                 operation.apply(red, other.red),
                 operation.apply(green, other.green),
                 operation.apply(blue, other.blue),
                 operation.apply(alpha, other.alpha)
-        );
+        };
     }
 
     public static RGBA average(List<RGBA> lst) {
