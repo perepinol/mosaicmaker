@@ -1,8 +1,8 @@
 package mosaicmaker.collager;
 
 import java.awt.image.BufferedImage;
-import java.util.Optional;
 
 public interface ICollager {
-    Optional<BufferedImage> findBestFit(int x, int y);
+    void draw(BufferedImage image, int x, int y);
+    BufferedImage finish();
 }

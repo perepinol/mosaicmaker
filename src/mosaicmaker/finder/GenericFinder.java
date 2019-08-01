@@ -1,4 +1,4 @@
-package mosaicmaker.collager;
+package mosaicmaker.finder;
 
 import mosaicmaker.RGBA;
 import mosaicmaker.comparators.IComparator;
@@ -10,12 +10,12 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class GenericCollager implements ICollager {
+public class GenericFinder implements IFinder {
 
     private IComparator comparator;
     private List<Pair<RGBA, String>> imageRGBAs;
 
-    public GenericCollager(String path, IComparator comparator) {
+    public GenericFinder(String path, IComparator comparator) {
         this.comparator = comparator;
         imageRGBAs = findAllAverages(path);
     }
