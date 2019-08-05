@@ -1,4 +1,4 @@
-package mosaicmaker.comparators;
+package mosaicmaker.comparator;
 
 import mosaicmaker.RGBA;
 
@@ -23,13 +23,16 @@ public class AverageComparator implements IComparator {
     }
 
     @Override
-    public int compareRGBA(RGBA other, int x, int y) {
+    public RGBA getRGBA(int x, int y) {
         if (x * atomWidth > image.getWidth() || y * atomHeight > image.getHeight())
             throw new IndexOutOfBoundsException("Coordinate out of bounds");
-
         int[] thisRGB = image.getRGB(x * atomWidth, y * atomHeight, atomWidth, atomHeight, null, 0, atomWidth);
-        RGBA thisAverage = RGBA.averageInt(Arrays.stream(thisRGB).boxed().collect(Collectors.toList()));
+        return RGBA.averageInt(Arrays.stream(thisRGB).boxed().collect(Collectors.toList()));
+    }
 
+    @Override
+    public int compareRGBA(RGBA other, int x, int y) {
+        RGBA thisAverage = getRGBA(x, y);
         RGBA error = thisAverage.operate(other, (a, b) -> Math.abs(a - b));
         return error.getRed() + error.getGreen() + error.getBlue() + (int) (error.getAlpha() * 255);
     }

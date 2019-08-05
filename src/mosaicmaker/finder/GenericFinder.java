@@ -1,7 +1,7 @@
 package mosaicmaker.finder;
 
 import mosaicmaker.RGBA;
-import mosaicmaker.comparators.IComparator;
+import mosaicmaker.comparator.IComparator;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -21,20 +21,26 @@ public class GenericFinder implements IFinder {
     }
 
     @Override
-    public Optional<BufferedImage> findBestFit(int x, int y) {
-        return imageRGBAs.stream().map(pair -> new Pair<>(
-                comparator.compareRGBA(pair.getKey(), x, y),
-                pair.getValue()
-        ))
-                .min(Comparator.comparingInt(Pair::getKey))
-                .map(pair -> {
+    public Optional<BufferedImage> getBestFit(int x, int y) {
+        return findBestFit(x, y)
+                .map(name -> {
                     try {
-                        return ImageIO.read(new File(pair.getValue()));
+                        return ImageIO.read(new File(name));
                     } catch (IOException ex) {
                         System.out.println(ex.toString());
                         return null;
                     }
                 });
+    }
+
+    @Override
+    public Optional<String> findBestFit(int x, int y) {
+        return imageRGBAs.stream().map(pair -> new Pair<>(
+                comparator.compareRGBA(pair.getKey(), x, y),
+                pair.getValue()
+        ))
+                .min(Comparator.comparingInt(Pair::getKey))
+                .map(Pair::getValue);
     }
 
     private List<Pair<RGBA, String>> findAllAverages(String path) {
@@ -50,7 +56,7 @@ public class GenericFinder implements IFinder {
                 image = ImageIO.read(file);
                 int[] colors = image.getRGB(0, 0, image.getWidth(), image.getHeight(), null, 0, image.getWidth());
                 RGBA average = RGBA.averageInt(Arrays.stream(colors).boxed().collect(Collectors.toList()));
-                imageRGBAs.add(new Pair<>(average, file.getAbsolutePath()));
+                imageRGBAs.add(new Pair<>(average, file.getPath()));
             } catch (IOException ex) {
                 System.out.println(ex.toString());
             }

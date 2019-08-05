@@ -1,5 +1,7 @@
 package mosaicmaker.collager;
 
+import mosaicmaker.RGBA;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 
@@ -25,6 +27,14 @@ public class Collager implements ICollager {
     @Override
     public void draw(BufferedImage image, int x, int y) {
         graphics.drawImage(image, x * atomWidth, y * atomHeight, null);
+    }
+
+    @Override
+    public void drawColor(RGBA color, int x, int y) {
+        Color initialColor = graphics.getColor();
+        graphics.setColor(color.toColor());
+        graphics.fill(new Rectangle(x * atomWidth, y * atomHeight, atomWidth, atomHeight));
+        graphics.setColor(initialColor);
     }
 
     @Override

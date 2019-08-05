@@ -1,5 +1,6 @@
 package mosaicmaker;
 
+import java.awt.*;
 import java.util.List;
 import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
@@ -34,6 +35,8 @@ public class RGBA {
     public int toInt() {
         return (alpha << 24) | (red << 16) | (green << 8) | blue;
     }
+
+    public Color toColor() { return new Color(red, green, blue, alpha); }
 
     public double getAlpha() {
         return ((double) alpha) / 255;

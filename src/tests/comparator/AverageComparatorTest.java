@@ -1,7 +1,7 @@
-package tests.comparators;
+package tests.comparator;
 
 import mosaicmaker.RGBA;
-import mosaicmaker.comparators.AverageComparator;
+import mosaicmaker.comparator.AverageComparator;
 import org.junit.Test;
 
 import javax.imageio.ImageIO;
